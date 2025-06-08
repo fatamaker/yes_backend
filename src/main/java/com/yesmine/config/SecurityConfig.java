@@ -69,6 +69,7 @@ public class SecurityConfig {
 		            .requestMatchers("/api/operations/**").hasAnyAuthority("USER", "ADMIN","RESONSABLE FRAIS")
 		            .requestMatchers("/api/personnes/**").hasAnyAuthority("USER", "ADMIN","RESONSABLE FRAIS")
 		            .requestMatchers("/api/risques/**").hasAnyAuthority("USER", "ADMIN","RESONSABLE FRAIS")
+		            .requestMatchers("/api/frais/**").hasAnyAuthority("USER", "ADMIN","RESONSABLE FRAIS")
 		            
 		            .anyRequest().authenticated()
 		        )

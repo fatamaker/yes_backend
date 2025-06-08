@@ -3,6 +3,7 @@ package com.yesmine.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -48,11 +49,11 @@ public class Risque {
     
     //numero de dossier
 
-    
     @ManyToOne
     @JoinColumn(name = "dossier_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnoreProperties({"risques"}) // éviter la récursion si Dossier a une liste de risques
     private Dossier dossier;
+
 
     public Risque() {}
 
