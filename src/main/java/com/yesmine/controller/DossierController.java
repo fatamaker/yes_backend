@@ -3,6 +3,8 @@ package com.yesmine.controller;
 import com.yesmine.model.Dossier;
 import com.yesmine.model.Risque;
 import com.yesmine.service.DossierService;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +19,8 @@ public class DossierController {
     public DossierController(DossierService dossierService) {
         this.dossierService = dossierService;
     }
-
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+   
     public ResponseEntity<Dossier> createDossier(@RequestBody Dossier dossier) {
         Dossier created = dossierService.createDossier(dossier);
         return ResponseEntity.ok(created);

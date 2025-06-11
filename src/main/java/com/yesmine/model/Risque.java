@@ -51,8 +51,11 @@ public class Risque {
 
     @ManyToOne
     @JoinColumn(name = "dossier_id", nullable = false)
-    @JsonIgnoreProperties({"risques"}) // éviter la récursion si Dossier a une liste de risques
+    @JsonIgnoreProperties({"risques"}) 
+    @JsonBackReference// éviter la récursion si Dossier a une liste de risques
     private Dossier dossier;
+    
+    
 
 
     public Risque() {}

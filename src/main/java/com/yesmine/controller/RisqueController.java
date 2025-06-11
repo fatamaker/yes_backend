@@ -62,9 +62,9 @@ public class RisqueController {
         }
     }
 
-    // Mettre à jour un risque
     @PutMapping("/{id}")
     public ResponseEntity<Risque> updateRisque(@PathVariable Long id, @RequestBody Risque risque) {
+        // Récupérer le risque existant
         Risque existing = risqueService.getAllRisques()
                                        .stream()
                                        .filter(r -> r.getId().equals(id))
@@ -73,15 +73,42 @@ public class RisqueController {
         if (existing == null) {
             return ResponseEntity.notFound().build();
         }
-        risque.setId(id); // Assure-toi que l'ID est conservé
-        Risque updated = risqueService.updateRisque(risque);
+
+        // Garder les champs que tu ne veux pas changer
+        risque.setId(id);
+        risque.setDossier(existing.getDossier()); // dossier_id
+        risque.setNature(existing.getNature());   // nature_id
+        risque.setStade(existing.getStade());     // stade_id
+        risque.setNum(existing.getNum());         // num
+
+        // Ici on met à jour seulement les autres champs du DTO reçu
+        // Par exemple :
+        existing.setInteretConventionnel(risque.getInteretConventionnel());
+        existing.setMontantInteretRetard(risque.getMontantInteretRetard());
+        existing.setMontantPrincipale(risque.getMontantPrincipale());
+        existing.setSoldeInteretConventionnel(risque.getSoldeInteretConventionnel());
+        existing.setSoldeInteretRetard(risque.getSoldeInteretRetard());
+        existing.setSoldePrincipale(risque.getSoldePrincipale());
+        
+        // Sauvegarder les modifications
+        Risque updated = risqueService.updateRisque(existing);
+
         return ResponseEntity.ok(updated);
     }
 
-    // Supprimer un risque
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRisque(@PathVariable Long id) {
-        risqueService.deleteRisque(id);
-        return ResponseEntity.noContent().build();
+    
+    @GetMapping(params = "id")
+    public ResponseEntity<Risque> getRisqueByIdParam(@RequestParam Long id) {
+        Risque risque = risqueService.getRisqueById(id);
+        if (risque != null) {
+            return ResponseEntity.ok(risque);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+    
+    
+    
+    
+
 }

@@ -21,6 +21,7 @@ import com.yesmine.service.DebiteurService;
 import com.yesmine.service.DossierService;
 import com.yesmine.service.PersonneService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -75,29 +76,51 @@ public class DebiteurController {
     }
     
 
+	/*
+	 * @PostMapping("/avec-personne-existante") public ResponseEntity<Debiteur>
+	 * creerDebiteurAvecPersonneExistante(@RequestBody CreateDebiteurRequest
+	 * request) { Personne personne =
+	 * personneService.getPersonneById(request.getPersonneId()); if (personne ==
+	 * null) { return ResponseEntity.badRequest().body(null); }
+	 * 
+	 * Dossier dossier = dossierService.getByNumero(request.getNumeroDossier()); if
+	 * (dossier == null) { return ResponseEntity.badRequest().body(null); }
+	 * 
+	 * Debiteur debiteur = new Debiteur();
+	 * debiteur.setNumContentieux(request.getNumContentieux());
+	 * debiteur.setDateTransfert(request.getDateTransfert());
+	 * debiteur.setSoldeRecouvrement(request.getSoldeRecouvrement());
+	 * debiteur.setRapporteur(request.getRapporteur());
+	 * debiteur.setPersonne(personne); debiteur.setDossier(dossier);
+	 * 
+	 * Debiteur saved = debiteurService.enregistrer(debiteur);
+	 * 
+	 * return ResponseEntity.ok(saved); // Retourne l’entité Debiteur }
+	 */
+    
+    
     @PostMapping("/avec-personne-existante")
-    public ResponseEntity<Debiteur> creerDebiteurAvecPersonneExistante(@RequestBody CreateDebiteurRequest request) {
+    public ResponseEntity<?> creerDebiteurAvecPersonneExistante(
+            @Valid @RequestBody CreateDebiteurRequest request) {
+        
+        // La validation basique est déjà faite par @Valid
+        
         Personne personne = personneService.getPersonneById(request.getPersonneId());
         if (personne == null) {
-            return ResponseEntity.badRequest().body(null);
-        }
-
-        Dossier dossier = dossierService.getByNumero(request.getNumeroDossier());
-        if (dossier == null) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body("Personne non trouvée");
         }
 
         Debiteur debiteur = new Debiteur();
         debiteur.setNumContentieux(request.getNumContentieux());
         debiteur.setDateTransfert(request.getDateTransfert());
         debiteur.setSoldeRecouvrement(request.getSoldeRecouvrement());
-        debiteur.setRapporteur(request.getRapporteur());
+        debiteur.setRapporteur(request.getRapporteur()); // Peut être null
         debiteur.setPersonne(personne);
-        debiteur.setDossier(dossier);
+        
+        personne.setDebiteur(true); 
 
         Debiteur saved = debiteurService.enregistrer(debiteur);
-
-        return ResponseEntity.ok(saved);  // Retourne l’entité Debiteur
+        return ResponseEntity.ok(saved);
     }
     
     @GetMapping("/by-dossier/{numero}")

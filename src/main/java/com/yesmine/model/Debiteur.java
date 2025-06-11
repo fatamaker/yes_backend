@@ -22,8 +22,7 @@ public class Debiteur {
     @Column(name = "solde_recouvrement")
     private Double soldeRecouvrement;
 
-    @Column(name = "rapporteur")
-    private String rapporteur;
+ 
 
     @ManyToOne
     @JoinColumn(name = "personne_id", nullable = false)
@@ -37,12 +36,15 @@ public class Debiteur {
 	 */
     
     //numero de dossier
+   
+    
+    @Column(nullable = true)  // Rend le champ optionnel en base
+    private String rapporteur;
     
     @ManyToOne
-    @JoinColumn(name = "dossier_id", nullable = false)
-    private Dossier dossier; 
-    
-    
+    @JoinColumn(name = "dossier_id", nullable = true)  // Relation optionnelle
+    private Dossier dossier;
+
  
     
 

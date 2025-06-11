@@ -21,24 +21,34 @@ public class DebiteurService {
     private final DebiteurRepository repository;
    
  
-    
     public DebiteurDto mapToDTO(Debiteur debiteur) {
         DebiteurDto dto = new DebiteurDto();
         dto.setNumContentieux(debiteur.getNumContentieux());
         dto.setDateTransfert(debiteur.getDateTransfert());
         dto.setSoldeRecouvrement(debiteur.getSoldeRecouvrement());
         dto.setRapporteur(debiteur.getRapporteur());
-        dto.setNumeroDossier(debiteur.getDossier().getNumero());
+
+        // Vérification de null pour éviter NullPointerException
+        if (debiteur.getDossier() != null) {
+            dto.setNumeroDossier(debiteur.getDossier().getNumero());
+        } else {
+            dto.setNumeroDossier(null); // ou "N/A" si tu préfères une chaîne
+        }
 
         Personne personne = debiteur.getPersonne();
-        PersonneDto personneDto = new PersonneDto();
-        personneDto.setId(personne.getId());
-        personneDto.setNom(personne.getNom());
-        personneDto.setPrenom(personne.getPrenom());
+        if (personne != null) {
+            PersonneDto personneDto = new PersonneDto();
+            personneDto.setId(personne.getId());
+            personneDto.setNom(personne.getNom());
+            personneDto.setPrenom(personne.getPrenom());
+            dto.setPersonne(personneDto);
+        } else {
+            dto.setPersonne(null); // sécurité supplémentaire, au cas où
+        }
 
-        dto.setPersonne(personneDto);
         return dto;
     }
+
 
 
 

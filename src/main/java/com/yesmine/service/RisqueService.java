@@ -29,12 +29,12 @@ public class RisqueService {
         return saved;
     }
 
-    // Mettre à jour un risque existant
-    public Risque updateRisque(Risque risque) {
-        Risque updated = risqueRepository.save(risque);
-        enregistrerHistorique(updated, "MODIFICATION");
-        return updated;
-    }
+	    // Mettre à jour un risque existant
+	    public Risque updateRisque(Risque risque) {
+	        Risque updated = risqueRepository.save(risque);
+	        enregistrerHistorique(updated, "MODIFICATION");
+	        return updated;
+	    }
 
     // Supprimer un risque par ID
     public void deleteRisque(Long id) {
@@ -55,10 +55,10 @@ public class RisqueService {
         return risqueRepository.findByNum(num);
     }
 
-    // Récupérer un risque par ID
-    public Optional<Risque> getRisqueById(Long id) {
-        return risqueRepository.findById(id);
-    }
+	/*
+	 * // Récupérer un risque par ID public Optional<Risque> getRisqueById(Long id)
+	 * { return risqueRepository.findById(id); }
+	 */
 
     // Récupérer les risques associés à un débiteur (natureId)
     
@@ -84,5 +84,12 @@ public class RisqueService {
         historique.setDateAction(new Date());
 
         historiqueRisqueRepository.save(historique);
+    }
+    
+    
+ 
+    public Risque getRisqueById(Long id) {
+        Optional<Risque> optionalRisque = risqueRepository.findById(id);
+        return optionalRisque.orElse(null);
     }
 }

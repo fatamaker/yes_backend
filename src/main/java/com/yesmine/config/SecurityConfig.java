@@ -70,6 +70,7 @@ public class SecurityConfig {
 		            .requestMatchers("/api/personnes/**").hasAnyAuthority("USER", "ADMIN","RESONSABLE FRAIS")
 		            .requestMatchers("/api/risques/**").hasAnyAuthority("USER", "ADMIN","RESONSABLE FRAIS")
 		            .requestMatchers("/api/frais/**").hasAnyAuthority("USER", "ADMIN","RESONSABLE FRAIS")
+		            .requestMatchers("/api/recouvrements/**").hasAnyAuthority("USER", "ADMIN","RESONSABLE FRAIS")
 		            
 		            .anyRequest().authenticated()
 		        )

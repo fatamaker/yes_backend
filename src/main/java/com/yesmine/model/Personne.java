@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Data
 public class Personne {
@@ -32,15 +34,23 @@ public class Personne {
 
     @Column(name = "raison_sociale")
     private String raisonSociale;
+    
+    @Column(name = "is_debiteur", nullable = false)
+    @JsonProperty("isDebiteur") // Force this name in JSON
+    private boolean isDebiteur = false;
+   
+   
 
     public Personne() {}
 
-    public Personne(String nom, String prenom, Date dateNaissance, String cin, TypePersonne typePersonne, String raisonSociale) {
+    public Personne(String nom, String prenom, Date dateNaissance, String cin, 
+                  TypePersonne typePersonne, String raisonSociale, boolean isDebiteur) {
         this.nom = nom;
         this.prenom = prenom;
         this.dateNaissance = dateNaissance;
         this.cin = cin;
         this.typePersonne = typePersonne;
         this.raisonSociale = raisonSociale;
+        this.isDebiteur = isDebiteur;
     }
 }

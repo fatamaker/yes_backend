@@ -18,9 +18,10 @@ public class Dossier {
     private Long numero; 
 	private String etat;
 	
-	   @OneToMany(mappedBy = "dossier")
+	  
+	   @OneToMany(mappedBy = "dossier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	    @JsonManagedReference
-	private List<Risque> risques = new ArrayList<>();
+	    private List<Risque> risques = new ArrayList<>();
 	
 
 
