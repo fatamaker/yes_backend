@@ -3,8 +3,13 @@ package com.yesmine.service;
 
 import com.yesmine.model.Risque;
 import com.yesmine.model.RisqueHistorique;
+import com.yesmine.model.Stade;
 import com.yesmine.repository.RisqueHistoriqueRepository;
 import com.yesmine.repository.RisqueRepository;
+import com.yesmine.repository.StadeRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +26,10 @@ public class RisqueService {
 
     @Autowired
     private RisqueHistoriqueRepository historiqueRisqueRepository;
+    
+    @Autowired
+    private StadeRepository stadeRepository;
+
 
     // Créer un nouveau risque
     public Risque saveRisque(Risque risque) {
@@ -92,4 +101,66 @@ public class RisqueService {
         Optional<Risque> optionalRisque = risqueRepository.findById(id);
         return optionalRisque.orElse(null);
     }
-}
+    
+    public List<Risque> getRisksReadyForClosure() {
+        return risqueRepository.findRisksReadyForClosure();
+    }
+
+	/*
+	 * @Transactional public Risque closeRisk(Long id) { Risque risque =
+	 * risqueRepository.findById(id) .orElseThrow(() -> new
+	 * EntityNotFoundException("Risk not found with id: " + id));
+	 * 
+	 * if (risque.getMontantPrincipale() != 0) { throw new
+	 * IllegalStateException("Cannot close risk with non-zero principal balance"); }
+	 * 
+	 * if (hasUnpaidFees(risque)) { throw new
+	 * IllegalStateException("Cannot close risk with unpaid fees"); }
+	 * 
+	 * Stade closedStage = stadeRepository.findByNom("prés-clôture") .orElseThrow(()
+	 * -> new EntityNotFoundException("Closed stage not found"));
+	 * 
+	 * 
+	 * risque.setStade(closedStage); Risque updatedRisque =
+	 * risqueRepository.save(risque); enregistrerHistorique(updatedRisque,
+	 * "Clôturé");
+	 * 
+	 * return updatedRisque; }
+	 */
+    
+    
+    @Transactional
+    public Risque closeRisk(Long id) {
+        Risque risque = risqueRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Risk not found with id: " + id));
+        
+        System.out.println("Risque avant update: stade = " + (risque.getStade() != null ? risque.getStade().getNom() : "null"));
+        
+        if (risque.getMontantPrincipale() != 0) {
+            throw new IllegalStateException("Cannot close risk with non-zero principal balance");
+        }
+        
+        if (hasUnpaidFees(risque)) {
+            throw new IllegalStateException("Cannot close risk with unpaid fees");
+        }
+        
+        Stade closedStage = stadeRepository.findByNom("Clôturé")
+        	    .orElseThrow(() -> new EntityNotFoundException("Closed stage not found"));
+        
+        System.out.println("Stade récupéré: " + closedStage.getNom());
+        
+        risque.setStade(closedStage);
+        
+        // Option 1 : save explicite
+        Risque updatedRisque = risqueRepository.save(risque);
+        
+        enregistrerHistorique(updatedRisque, "Clôturé");
+        
+        System.out.println("Risque après update: stade = " + updatedRisque.getStade().getNom());
+        
+        return updatedRisque;
+    }
+
+    private boolean hasUnpaidFees(Risque risque) {
+        return risqueRepository.hasUnpaidFees(risque);
+    }}

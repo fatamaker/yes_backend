@@ -107,7 +107,22 @@ public class RisqueController {
         }
     }
     
-    
+    @GetMapping("/ready-for-closure")
+    public ResponseEntity<List<Risque>> getRisksReadyForClosure() {
+        // Récupérer les risques avec solde principal = 0 et stade différent de "Clôturé"
+        List<Risque> risks = risqueService.getRisksReadyForClosure();
+        return ResponseEntity.ok(risks);
+    }
+
+    @PostMapping("/{id}/close")
+    public ResponseEntity<Risque> closeRisk(@PathVariable Long id) {
+        Risque risque = risqueService.closeRisk(id);
+        if (risque != null) {
+            return ResponseEntity.ok(risque);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     
     
 
